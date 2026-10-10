@@ -1,0 +1,199 @@
+@import 'tailwindcss';
+
+/*
+ * Vertex design system - centralised tokens.
+ *
+ * Palette derived from the program guide PDF: white pages, black ink, a single
+ * vivid coral-red brand colour (#ff443a), warm greys (#8f8f8b / #e9e9e8),
+ * cream (#f4ebe1) and a dark brown (#451713). Original branding - no
+ * third-party logos or artwork are reproduced.
+ *
+ * Colour roles (kept strictly separate):
+ *   accent  - brand / interactive chrome: buttons, active nav, toggles, focus
+ *   ok      - healthy / active device status
+ *   warn    - warnings            crit - critical alarms (crimson, NOT coral)
+ *   chart   - neutral ink for data lines so a trend is never read as an alarm
+ *
+ * Components use ONLY the semantic utilities generated below
+ * (bg-surface, text-fg-2, border-line, text-accent-text, bg-crit/10 ...), so a
+ * theme switch is just a change of CSS variables.
+ */
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* Light - the default, matching the white program guide. */
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f6f5f3;
+  --bg-elev: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f6f5f3;
+  --surface-3: #e9e9e8;
+  --line: #e4e2df;
+  --line-strong: #cfccc7;
+  --fg: #111110;
+  --fg-2: #4a4946;
+  --fg-3: #6e6d69;
+  --accent: #ff443a;
+  --accent-text: #d42a1e;
+  --accent-fill: #d6301f;
+  --accent-fill-hover: #bf2717;
+  --accent-ink: #ffffff;
+  --brand-tint: #f4ebe1;
+  --ok: #1b7a43;
+  --warn: #a85d00;
+  --crit: #b0123a;
+  --info: #2a6fb0;
+  --chart: #1d1d1b;
+  --grid: #ecebe8;
+  --shadow: 0 1px 2px rgba(17, 17, 16, 0.05), 0 8px 24px -18px rgba(17, 17, 16, 0.25);
+}
+
+/* Dark - black ink inverted, same coral brand colour. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0c0c0b;
+  --bg-elev: #121211;
+  --surface: #161615;
+  --surface-2: #1d1c1b;
+  --surface-3: #262524;
+  --line: #2a2927;
+  --line-strong: #3a3936;
+  --fg: #f2f1ee;
+  --fg-2: #b5b3ae;
+  --fg-3: #8f8f8b;
+  --accent: #ff443a;
+  --accent-text: #ff5a4f;
+  --accent-fill: #ff443a;
+  --accent-fill-hover: #ff5a4f;
+  --accent-ink: #0c0c0b;
+  --brand-tint: #1c1210;
+  --ok: #3ccb7f;
+  --warn: #f0a83a;
+  --crit: #ff5c7a;
+  --info: #6aa8e0;
+  --chart: #e9e9e8;
+  --grid: #232220;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elev: var(--bg-elev);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-accent-fill: var(--accent-fill);
+  --color-accent-fill-hover: var(--accent-fill-hover);
+  --color-accent-ink: var(--accent-ink);
+  --color-brand-tint: var(--brand-tint);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-crit: var(--crit);
+  --color-info: var(--info);
+  --color-chart: var(--chart);
+  --color-grid: var(--grid);
+  --shadow-card: var(--shadow);
+}
+
+@theme {
+  --font-sans: 'Roboto', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+}
+
+@layer base {
+  html,
+  body {
+    background: var(--bg);
+    color: var(--fg);
+  }
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 35%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+}
+
+@layer components {
+  /* Uppercase micro-label used across the console ("SYSTEM STATUS", "QUEUE"). */
+  .eyebrow {
+    font-size: var(--text-2xs);
+    line-height: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--fg-3);
+  }
+  /* Brand motif: a grid of small coral squares (original pattern). */
+  .square-dots {
+    background-image: conic-gradient(from 270deg at 3px 3px, var(--accent) 25%, transparent 0);
+    background-size: 22px 22px;
+  }
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Range input themed to the console. */
+  .range {
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--accent) var(--fill, 0%), var(--surface-3) var(--fill, 0%));
+    cursor: pointer;
+  }
+  .range:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  .range::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    transition: transform 120ms ease;
+  }
+  .range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+  .range::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

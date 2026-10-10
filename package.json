@@ -1,0 +1,19 @@
+{
+  "name": "vertex-home-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vertex Home Hub - a QNX-inspired smart home coordination console (simulation prototype)",
+  "workspaces": ["server", "client"],
+  "scripts": {
+    "setup": "node scripts/setup-env.mjs",
+    "dev": "concurrently -n server,client -c green,cyan \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w server && npm run build -w client",
+    "start": "npm run start -w server",
+    "test": "npm run test -w server && npm run test -w client",
+    "typecheck": "npm run typecheck -w server && npm run typecheck -w client"
+  },
+  "devDependencies": {
+    "concurrently": "9.1.2"
+  },
+  "engines": { "node": ">=22.13.0" }
+}
