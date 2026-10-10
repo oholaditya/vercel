@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
-import { FlaskConical, Loader2, Lock } from 'lucide-react';
+import { FlaskConical, Loader2, Lock, MonitorPlay } from 'lucide-react';
+import { IS_DEMO } from '../lib/api';
 import { useAuth } from '../state/auth';
 import { BrandMark } from '../components/layout/Brand';
 import { Field, inputClass } from '../components/ui/primitives';
@@ -11,17 +12,20 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
+  const signIn = async (user: string, pass: string) => {
     setBusy(true);
     setError(null);
     try {
-      await login(username.trim(), password);
+      await login(user, pass);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign-in failed');
     } finally {
       setBusy(false);
     }
+  };
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    void signIn(username.trim(), password);
   };
 
   return (
@@ -74,7 +78,34 @@ export function LoginPage() {
             <div className="text-sm font-bold tracking-[0.2em] text-fg">VERTEX</div>
           </div>
           <h2 className="text-xl font-semibold text-fg">Sign in to the hub</h2>
-          <p className="mt-1 text-sm text-fg-2">Use the credentials configured in <code className="num text-xs text-fg">server/.env</code>.</p>
+          <p className="mt-1 text-sm text-fg-2">
+            {IS_DEMO ? (
+              <>Browser demo - pick a role below, or sign in with password <code className="num text-xs text-fg">demo</code>.</>
+            ) : (
+              <>Use the credentials configured in <code className="num text-xs text-fg">server/.env</code>.</>
+            )}
+          </p>
+
+          {IS_DEMO && (
+            <div className="mt-6 rounded-lg border border-accent/30 bg-accent/[0.06] p-3">
+              <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-fg">
+                <MonitorPlay className="size-4 text-accent" /> Enter the demo as
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {(['admin', 'operator', 'viewer'] as const).map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    disabled={busy}
+                    onClick={() => void signIn(r, 'demo')}
+                    className="h-9 rounded-lg border border-line bg-surface text-sm font-medium text-fg capitalize transition-colors hover:border-accent hover:text-accent-text disabled:opacity-50"
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <form onSubmit={submit} className="mt-6 space-y-4" noValidate>
             <Field label="Username">

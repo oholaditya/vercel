@@ -19,6 +19,7 @@ import { systemLabel, systemTone, toneText } from '../../theme/tokens';
 import { useTheme } from '../../theme/ThemeProvider';
 import { useAuth } from '../../state/auth';
 import { useHub, type Connection } from '../../state/hub';
+import { IS_DEMO } from '../../lib/api';
 import { cx, StatusDot } from '../ui/primitives';
 import { BrandWordmark } from './Brand';
 
@@ -31,7 +32,7 @@ const NAV = [
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
 
-const connLabel: Record<Connection, string> = { live: 'Live', connecting: 'Connecting', offline: 'Reconnecting' };
+const connLabel: Record<Connection, string> = { live: IS_DEMO ? 'Demo' : 'Live', connecting: 'Connecting', offline: 'Reconnecting' };
 
 export function AppShell() {
   const [navOpen, setNavOpen] = useState(false);
@@ -64,7 +65,9 @@ function SimulationBanner() {
       <FlaskConical className="size-3 shrink-0" aria-hidden />
       <span>
         <strong className="font-semibold tracking-wide uppercase">Simulation mode</strong>
-        <span className="hidden sm:inline"> - sensor data is simulated. Not a substitute for certified smoke/CO alarms or professional security monitoring.</span>
+        <span className="hidden sm:inline">
+          {IS_DEMO ? ' - browser demo: the hub runs in this tab and resets on reload.' : ' - sensor data is simulated.'} Not a substitute for certified smoke/CO alarms or professional security monitoring.
+        </span>
         <span className="sm:hidden"> - not a certified safety device.</span>
       </span>
     </div>

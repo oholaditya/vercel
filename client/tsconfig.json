@@ -12,9 +12,9 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["vite/client", "@testing-library/jest-dom"],
+    "types": ["vite/client", "@testing-library/jest-dom", "node"],
     "baseUrl": ".",
-    "paths": { "@shared/*": ["../server/src/domain/*"] }
+    "paths": { "@shared/*": ["../server/src/domain/*"], "@backend": ["./src/backend/http.ts"] }
   },
   "include": ["src", "tests", "vite.config.ts"]
 }

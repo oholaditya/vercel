@@ -1,16 +1,14 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
-import { io, type Socket } from 'socket.io-client';
 import type {
   Alert,
   AutomationRule,
   DeviceCommand,
   DeviceSnapshot,
   HubEvent,
-  ServerToClientEvents,
   SystemOverview,
   TelemetryPoint,
 } from '@shared/types';
-import { api, ApiError, type AdapterStatus } from '../lib/api';
+import { api, ApiError, createHubSocket, type AdapterStatus, type HubSocket } from '../lib/api';
 import { useAuth } from './auth';
 import { useToast } from './toast';
 
@@ -105,7 +103,7 @@ export function HubProvider({ children }: { children: ReactNode }) {
   const { session } = useAuth();
   const notify = useToast();
   const [state, dispatch] = useReducer(reducer, initial);
-  const socketRef = useRef<Socket<ServerToClientEvents> | null>(null);
+  const socketRef = useRef<HubSocket | null>(null);
 
   useEffect(() => {
     if (!session) {
@@ -129,7 +127,7 @@ export function HubProvider({ children }: { children: ReactNode }) {
       }
     })();
 
-    const socket: Socket<ServerToClientEvents> = io({ auth: { token: session.token }, transports: ['websocket', 'polling'] });
+    const socket = createHubSocket(session.token);
     socketRef.current = socket;
     socket.on('connect', () => dispatch({ t: 'connection', connection: 'live' }));
     socket.on('disconnect', () => dispatch({ t: 'connection', connection: 'offline' }));

@@ -70,6 +70,30 @@ The server then serves the built console and the API together on
 `server/.env`: the server then refuses to start without a strong `JWT_SECRET`
 and an explicit `ADMIN_PASSWORD`.
 
+## 3b. Browser demo build (Vercel)
+
+The full hub needs a long-running Node.js process (WebSockets, background
+simulator, SQLite), which serverless platforms such as Vercel cannot host. For
+a zero-backend deployment there is a **demo build** that runs the *same* hub
+engine (`server/src/engine`, device models, simulator, Zod validation) inside
+the browser against in-memory storage:
+
+```bash
+npm run build:demo -w client
+```
+
+```bash
+npm run preview:demo -w client
+```
+
+Then open <http://localhost:4173> and enter as **admin**, **operator** or
+**viewer** (password `demo`). Each visitor gets an independent hub that resets
+on reload; nothing is shared or persisted.
+
+`vercel.json` configures Vercel to build this demo (`client/dist`, SPA
+rewrites). Import the GitHub repository at <https://vercel.com/new> - no
+settings or environment variables are needed.
+
 ## 4. Tests
 
 ```bash
